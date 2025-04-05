@@ -12,15 +12,14 @@ export default function Home() {
     newJoke('');
   }, []);
 
-  const searchTextHandle = (e: any) => {
+  const searchTextHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchText(value);
   }
 
-  const searchTextPress = (e: any) =>{
+  const searchTextPress = (e: { keyCode: number; target: { value: string; }; }) =>{
     if(e.keyCode == 13){
       const value = e.target.value;
-      console.log('value  '+value );
       setSearchText(value);
       newJoke(value);
     }
@@ -52,8 +51,6 @@ export default function Home() {
       })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
-          
           if(data.results.length > 0){
             const joke = data.results[0].joke;
             setDadjoke(joke);
