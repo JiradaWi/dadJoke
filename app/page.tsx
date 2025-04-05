@@ -5,27 +5,54 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [dadJoke, setDadjoke] = useState("");
   const [isLoading, setIsLoading] = useState("");
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     setIsLoading('true');
     newJoke();
   }, []);
 
+  const searchTextHandle = (e: any) => {
+    const value = e.target.value;
+    setSearchText(value);
+  }
 
   const newJoke = () => {
     console.log('newJoke')
     setIsLoading('true');
-    fetch('https://icanhazdadjoke.com/', {
-      headers: {
-        Accept: 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        setDadjoke(data.joke);
-        setIsLoading('false');
-        console.log(`Dad Joke: ${dadJoke}`);
-      });
+   
+    if(searchText == ''){
+      fetch('https://icanhazdadjoke.com/', {
+        headers: {
+          Accept: 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          setDadjoke(data.joke);
+          setIsLoading('false');
+        });
+    }else{
+      fetch('https://icanhazdadjoke.com/search?term='+searchText, {
+        headers: {
+          Accept: 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          
+          if(data.results.length > 0){
+            const joke = data.results[0].joke;
+            setDadjoke(joke);
+          }else{
+            setDadjoke('Joke not found for '+searchText);
+          }
+          
+          setIsLoading('false');
+        });
+    }
+   
   }
 
   function btnSwitcher(){
@@ -44,10 +71,28 @@ export default function Home() {
     }else{
       return (
         <div>
-          <button type="button" onClick={newJoke} 
-            className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
-            Get New Joke
-            </button>
+         
+          
+
+          <label htmlFor="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+          <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                  </svg>
+              </div>
+              <input type="search" 
+                id="search" 
+                className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                placeholder="Search" 
+                onBlur={searchTextHandle}
+                 />
+              <button type="submit" onClick={newJoke} 
+              className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Search Joke
+              </button>
+          </div>
+
            
         </div>
         );
