@@ -17,11 +17,12 @@ export default function Home() {
     setSearchText(value);
   }
 
-  const searchTextPress = (e: React.KeyboardEventHandler<HTMLInputElement>) =>{
+  const searchTextPress = (e: React.ChangeEvent<HTMLInputElement>) =>{
+    // const e: {key: string, target: {value: string}} = ev;
     console.log(e);
-    console.log('2'+e.key);
-    console.log('3'+e.target.value);
-    if(e.key == 'Enter'){
+    console.log('2'+e.currentTarget.value);
+    console.log('3'+e.keyCode);
+    if(e.keyCode == '13'){
       const value = e.target.value;
       setSearchText(value);
       newJoke(value);
