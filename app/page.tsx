@@ -52,10 +52,15 @@ export default function Home() {
         .then(response => response.json())
         .then(data => {
           if(data.results.length > 0){
-            const joke = data.results[0].joke;
+            const jokes = data.results;
+            let joke = '';
+            jokes.forEach((element: { joke: string; }) => {
+              joke += element.joke +'\n';
+            });
+
             setDadjoke(joke);
           }else{
-            setDadjoke('Joke not found for '+searchText);
+            setDadjoke('Joke not found for '+searchText+'.');
           }
           
           setIsLoading('false');
@@ -80,8 +85,6 @@ export default function Home() {
     }else{
       return (
         <div>
-         
-          
 
           <label htmlFor="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
           <div className="relative">
@@ -112,8 +115,10 @@ export default function Home() {
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
        
-        <div style={{ width: '100%', height: 'auto' }} >
-          Joke: {dadJoke}
+        <div style={{ width: '100%', height: 'auto' }}  className="whitespace-pre-line" >
+          <span className="text-2xl">🫩</span>: <br/>
+           {dadJoke}
+        
         </div>
 
         <div style={{ width: '100%', height: 'auto', textAlign: 'center' }} >
